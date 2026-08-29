@@ -1,45 +1,58 @@
 /*
-Problema: D - Increasing Array (CSES - 1094)
+Problema: D - Sum of Two Values (CSES - 1640)
 
-Você recebe um array de n inteiros. Você deseja modificar o array para que ele seja crescente, ou seja, cada elemento seja pelo menos tão grande quanto o elemento anterior.
-A cada movimento, você pode aumentar o valor de qualquer elemento em um. Qual é o número mínimo de movimentos necessários?
+Você recebe um array de n inteiros, e sua tarefa é encontrar dois valores (em posições distintas) cuja soma é x.
 
 Entrada
-A primeira linha de entrada contém um inteiro n: o tamanho do array.
-Então, a segunda linha contém n inteiros x_1, x_2, ..., x_n: o conteúdo do array.
+A primeira linha de entrada possui dois inteiros n e x: o tamanho do array e a soma alvo.
+A segunda linha possui n inteiros a_1, a_2, ..., a_n: os valores do array.
 
 Saída
-Imprima o número mínimo de movimentos.
+Imprima dois inteiros: as posições dos valores. Se houver várias soluções, você pode imprimir qualquer uma delas. Se não houver soluções, imprima IMPOSSIBLE.
 
 Restrições
 - 1 <= n <= 2 * 10^5
-- 1 <= x_i <= 10^9
+- 1 <= x, a_i <= 10^9
 */
+
 #include <iostream>
 #include <vector>
+#include <algorithm>
 
 using namespace std;
 
 int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+
     int n;
-    if (!(cin >> n)) return 0;
+    long long x;
+    if (!(cin >> n >> x)) return 0;
 
-    long long moves = 0;
-    long long prev;
-    cin >> prev;
+    vector<pair<long long, int>> a(n);
+    for (int i = 0; i < n; ++i) {
+        cin >> a[i].first;
+        a[i].second = i + 1;
+    }
 
-    for (int i = 1; i < n; i++) {
-        long long current;
-        cin >> current;
+    sort(a.begin(), a.end());
 
-        if (current < prev) {
-            moves += (prev - current);
+    int left = 0;
+    int right = n - 1;
+
+    while (left < right) {
+        long long current_sum = a[left].first + a[right].first;
+        if (current_sum == x) {
+            cout << a[left].second << " " << a[right].second << "\n";
+            return 0;
+        } else if (current_sum < x) {
+            left++;
         } else {
-            prev = current;
+            right--;
         }
     }
 
-    cout << moves << "\n";
+    cout << "IMPOSSIBLE\n";
 
     return 0;
 }

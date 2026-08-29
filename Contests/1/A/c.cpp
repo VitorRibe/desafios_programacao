@@ -1,43 +1,44 @@
 /*
-Problema: C - Repetitions (CSES - 1069)
+Problema: C - Maximum Subarray Sum (CSES - 1643)
 
-Você recebe uma sequência de DNA: uma string consistindo dos caracteres A, C, G e T. Sua tarefa é encontrar a repetição mais longa na sequência. Esta é uma substring de comprimento máximo contendo apenas um tipo de caractere.
+Dado um array de n inteiros, sua tarefa é encontrar a soma máxima de valores em um subarray contíguo e não vazio.
 
 Entrada
-A única linha de entrada contém uma string de n caracteres.
+A primeira linha de entrada possui um inteiro n: o tamanho do array.
+A segunda linha possui n inteiros x_1, x_2, ..., x_n: os valores do array.
 
 Saída
-Imprima um inteiro: o comprimento da repetição mais longa.
+Imprima um inteiro: a soma máxima do subarray.
 
 Restrições
-- 1 <= n <= 10^6
+- 1 <= n <= 2 * 10^5
+- -10^9 <= x_i <= 10^9
 */
+
 #include <iostream>
-#include <string>
+#include <vector>
 #include <algorithm>
 
 using namespace std;
 
 int main() {
-    string s;
-    if (!(cin >> s)) return 0;
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
 
-    int max_len = 0;
-    int current_len = 0;
+    int n;
+    if (!(cin >> n)) return 0;
 
-    for (size_t i = 0; i < s.length(); i++) {
-        if (i == 0 || s[i] == s[i - 1]) {
-            current_len++;
-        } else {
-            current_len = 1;
-        }
-        
-        if (current_len > max_len) {
-            max_len = current_len;
-        }
+    long long max_sum = -1e18;
+    long long current_sum = -1e18;
+
+    for (int i = 0; i < n; ++i) {
+        long long x;
+        cin >> x;
+        current_sum = max(x, current_sum + x);
+        max_sum = max(max_sum, current_sum);
     }
 
-    cout << max_len << "\n";
+    cout << max_sum << "\n";
 
     return 0;
 }

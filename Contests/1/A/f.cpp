@@ -1,52 +1,73 @@
 /*
-Problema: F - Number Spiral (CSES - 1071)
+Problema: F - Array Division (CSES - 1085)
 
-Uma espiral de números é uma grade infinita cujo quadrado superior esquerdo tem o número 1. Sua tarefa é descobrir o número na linha y e coluna x.
+Você recebe um array contendo n inteiros positivos.
+
+Sua tarefa é dividir o array em k subarrays de modo que a soma máxima em um subarray seja a menor possível.
 
 Entrada
-A primeira linha de entrada contém um inteiro t: o número de testes.
-Depois disso, existem t linhas, cada uma contendo os inteiros y e x.
+A primeira linha de entrada contém dois inteiros n e k: o tamanho do array e o número de subarrays na divisão.
+A próxima linha contém n inteiros x_1, x_2, ..., x_n: o conteúdo do array.
 
 Saída
-Para cada teste, imprima o número na linha y e coluna x.
+Imprima um inteiro: a soma máxima em um subarray na divisão ideal.
 
 Restrições
-- 1 <= t <= 10^5
-- 1 <= y, x <= 10^9
+- 1 <= n <= 2 * 10^5
+- 1 <= k <= n
+- 1 <= x_i <= 10^9
 */
+
 #include <iostream>
+#include <vector>
 #include <algorithm>
 
 using namespace std;
 
-void solve() {
-    long long y, x;
-    cin >> y >> x;
-
-    long long z = max(y, x);
-    long long z_sq = z * z;
-
-    if (z % 2 == 0) {
-        if (y == z) {
-            cout << z_sq - (x - 1) << "\n";
-        } else {
-            cout << (z - 1) * (z - 1) + y << "\n";
-        }
-    } else {
-        if (x == z) {
-            cout << z_sq - (y - 1) << "\n";
-        } else {
-            cout << (z - 1) * (z - 1) + x << "\n";
-        }
-    }
-}
-
 int main() {
-    int t;
-    if (cin >> t) {
-        while (t--) {
-            solve();
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+
+    int n, k;
+    if (!(cin >> n >> k)) return 0;
+
+    vector<long long> a(n);
+    long long max_val = 0;
+    long long sum_all = 0;
+
+    for (int i = 0; i < n; ++i) {
+        cin >> a[i];
+        max_val = max(max_val, a[i]);
+        sum_all += a[i];
+    }
+
+    long long low = max_val;
+    long long high = sum_all;
+    long long ans = high;
+
+    while (low <= high) {
+        long long mid = low + (high - low) / 2;
+        int subarrays = 1;
+        long long current_sum = 0;
+
+        for (int i = 0; i < n; ++i) {
+            if (current_sum + a[i] > mid) {
+                subarrays++;
+                current_sum = a[i];
+            } else {
+                current_sum += a[i];
+            }
+        }
+
+        if (subarrays <= k) {
+            ans = mid;
+            high = mid - 1;
+        } else {
+            low = mid + 1;
         }
     }
+
+    cout << ans << "\n";
+
     return 0;
 }

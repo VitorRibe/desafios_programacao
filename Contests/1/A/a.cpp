@@ -1,39 +1,46 @@
 /*
-Problema: A - Weird Algorithm (CSES - 1068)
+Problema: A - Static Range Sum Queries (CSES - 1646)
 
-Considere um algoritmo que recebe como entrada um inteiro positivo n. Se n for par, o algoritmo 
-o divide por dois, e se n for ímpar, o algoritmo o multiplica por três e soma um. O algoritmo 
-repete isso até que n seja um. Por exemplo, a sequência para n = 3 é a seguinte:
-
-3 -> 10 -> 5 -> 16 -> 8 -> 4 -> 2 -> 1
-
-Sua tarefa é simular a execução do algoritmo para um determinado valor de n.
+Dado um array de n inteiros, sua tarefa é processar q consultas da forma: qual é a soma dos valores no intervalo [a, b]?
 
 Entrada
-A única linha de entrada contém um inteiro n.
+A primeira linha de entrada possui dois inteiros n e q: o número de valores e consultas.
+A segunda linha possui n inteiros x_1, x_2, ..., x_n: os valores do array.
+Finalmente, existem q linhas descrevendo as consultas. Cada linha possui dois inteiros a e b: qual é a soma dos valores no intervalo [a, b]?
 
 Saída
-Imprima uma linha que contém todos os valores de n durante o algoritmo.
+Imprima o resultado de cada consulta.
 
 Restrições
-- 1 <= n <= 10^6
+- 1 <= n, q <= 2 * 10^5
+- 1 <= x_i <= 10^9
+- 1 <= a <= b <= n
 */
+
 #include <iostream>
+#include <vector>
 
 using namespace std;
 
 int main() {
-    long long n;
-    cin >> n;
-    while (n != 1) {
-        cout << n << " ";
-        if (n % 2 == 0) {
-            n = n / 2;
-        } else {
-            n = n * 3 + 1;
-        }
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+
+    int n, q;
+    if (!(cin >> n >> q)) return 0;
+
+    vector<long long> p(n + 1, 0);
+    for (int i = 1; i <= n; ++i) {
+        long long x;
+        cin >> x;
+        p[i] = p[i - 1] + x;
     }
-    cout << n << "\n";
+
+    for (int i = 0; i < q; ++i) {
+        int a, b;
+        cin >> a >> b;
+        cout << p[b] - p[a - 1] << "\n";
+    }
 
     return 0;
 }

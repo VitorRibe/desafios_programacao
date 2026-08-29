@@ -1,43 +1,51 @@
 /*
-Problema: E - Permutations (CSES - 1070)
+Problema: E - Playlist (CSES - 1141)
 
-Uma permutação dos inteiros 1, 2, ..., n é chamada de "beautiful" (linda) se não houver elementos adjacentes cuja diferença seja 1.
-Dado n, construa uma permutação linda se tal permutação existir.
+Você recebe uma playlist de uma estação de rádio desde o seu estabelecimento. A playlist tem um total de n músicas.
+
+Qual é a sequência mais longa de músicas sucessivas onde cada música é única?
 
 Entrada
-A única linha de entrada contém um inteiro n.
+A primeira linha de entrada contém um inteiro n: o número de músicas.
+A próxima linha tem n inteiros k_1, k_2, ..., k_n: o número de identificação de cada música.
 
 Saída
-Imprima uma permutação linda dos inteiros 1, 2, ..., n. Se houver várias soluções, você pode imprimir qualquer uma delas. Se não houver soluções, imprima "NO SOLUTION".
+Imprima o comprimento da sequência mais longa de músicas únicas.
 
 Restrições
-- 1 <= n <= 10^6
+- 1 <= n <= 2 * 10^5
+- 1 <= k_i <= 10^9
 */
+
 #include <iostream>
+#include <vector>
+#include <map>
+#include <algorithm>
 
 using namespace std;
 
 int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+
     int n;
     if (!(cin >> n)) return 0;
 
-    if (n == 1) {
-        cout << 1 << "\n";
-        return 0;
+    map<int, int> last_pos;
+    int start = 0;
+    int ans = 0;
+
+    for (int i = 0; i < n; ++i) {
+        int k;
+        cin >> k;
+        if (last_pos.count(k)) {
+            start = max(start, last_pos[k] + 1);
+        }
+        ans = max(ans, i - start + 1);
+        last_pos[k] = i;
     }
 
-    if (n == 2 || n == 3) {
-        cout << "NO SOLUTION\n";
-        return 0;
-    }
+    cout << ans << "\n";
 
-    for (int i = 2; i <= n; i += 2) {
-        cout << i << " ";
-    }
-
-    for (int i = 1; i <= n; i += 2) {
-        cout << i << " ";
-    }
-    cout << "\n";
     return 0;
 }

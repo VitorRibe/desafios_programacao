@@ -1,32 +1,53 @@
 /*
-Problema: H - Trailing Zeros (CSES - 1618)
+Problema: H - Stick Lengths (CSES - 1074)
 
-Sua tarefa é calcular o número de zeros finais no fatorial n!.
+Existem n gravetos com certos comprimentos. Sua tarefa é modificar os gravetos para que cada um tenha o mesmo comprimento.
 
-Por exemplo, 20! = 2432902008176640000 e tem 4 zeros finais.
+Você pode tanto aumentar quanto diminuir o comprimento de cada graveto. Ambas as operações custam x, onde x é a diferença entre o comprimento novo e o original.
+
+Qual é o custo total mínimo?
 
 Entrada
-A única linha de entrada possui um inteiro n.
+A primeira linha de entrada contém um inteiro n: o número de gravetos.
+Depois há n inteiros p_1, p_2, ..., p_n: os comprimentos dos gravetos.
 
 Saída
-Imprima o número de zeros finais em n!.
+Imprima um inteiro: o custo total mínimo.
 
 Restrições
-- 1 <= n <= 10^9
+- 1 <= n <= 2 * 10^5
+- 1 <= p_i <= 10^9
 */
+
 #include <iostream>
+#include <vector>
+#include <algorithm>
+#include <cmath>
+
 using namespace std;
 
 int main() {
-    long long n;
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
 
+    int n;
     if (!(cin >> n)) return 0;
 
-    long long zeros = 0;
-    
-    for (long long i = 5; n / i >= 1; i *= 5) {
-        zeros += n / i;
+    vector<long long> p(n);
+    for (int i = 0; i < n; ++i) {
+        cin >> p[i];
     }
-    cout << zeros << "\n";
+
+    sort(p.begin(), p.end());
+
+    long long median = p[n / 2];
+    long long total_cost = 0;
+
+    for (int i = 0; i < n; ++i) {
+        total_cost += abs(p[i] - median);
+    }
+
+    cout << total_cost << "\n";
+
     return 0;
 }
