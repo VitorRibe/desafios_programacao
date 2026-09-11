@@ -1,19 +1,15 @@
 /*
-Problema: A - Meet in the Middle (CSES - 1628)
+J - Livros
 
-Você recebe um array de n números. De quantas maneiras você pode escolher um subconjunto dos números com soma x?
+Quando Valera tem tempo livre, ele vai à biblioteca ler alguns livros. Hoje ele tem t minutos livres para ler. Por isso, Valera pegou n livros da biblioteca e estimou o tempo necessário para ler cada um. Valera precisa de a_i minutos para ler o i-ésimo livro.
+Valera decidiu escolher um livro arbitrário de número i e ler os livros sequencialmente a partir desse livro (i, i+1, i+2, ...). Ele para quando o tempo acabar ou terminar o n-ésimo livro. Ele só começa um livro se tiver tempo suficiente para terminá-lo.
+Imprima o número máximo de livros que Valera pode ler.
 
-Entrada
-A primeira linha de entrada tem dois números n e x: o tamanho do array e a soma necessária.
-A segunda linha tem n inteiros t_1, t_2, ..., t_n: os números no array.
+Entrada:
+A primeira linha contém dois inteiros n e t (1 <= n <= 10^5, 1 <= t <= 10^9) — o número de livros e o número de minutos livres. A segunda linha contém uma sequência de n inteiros a_1, a_2, ..., a_n (1 <= a_i <= 10^4).
 
-Saída
-Imprima o número de maneiras que você pode criar a soma x.
-
-Restrições
-- 1 <= n <= 40
-- 1 <= x <= 10^9
-- 1 <= t_i <= 10^9
+Saída:
+Imprima um único inteiro — o número máximo de livros que Valera pode ler.
 */
 
 #include <iostream>
@@ -22,53 +18,33 @@ Restrições
 
 using namespace std;
 
-void get_subset_sums(const vector<long long>& arr, vector<long long>& res) {
-    int n = arr.size();
-    for (int i = 0; i < (1 << n); ++i) {
-        long long sum = 0;
-        for (int j = 0; j < n; ++j) {
-            if (i & (1 << j)) {
-                sum += arr[j];
-            }
-        }
-        res.push_back(sum);
-    }
-}
-
 int main() {
     ios_base::sync_with_stdio(false);
     cin.tie(NULL);
 
     int n;
-    long long x;
-    if (!(cin >> n >> x)) return 0;
+    long long t;
+    if (!(cin >> n >> t)) return 0;
 
-    vector<long long> t(n);
-    for (int i = 0; i < n; ++i) {
-        cin >> t[i];
+    vector<long long> a(n);
+    for (int i = 0; i < n; i++) {
+        cin >> a[i];
     }
 
-    int mid = n / 2;
-    vector<long long> left_arr(t.begin(), t.begin() + mid);
-    vector<long long> right_arr(t.begin() + mid, t.end());
+    int l = 0;
+    long long current_sum = 0;
+    int max_books = 0;
 
-    vector<long long> left_sums, right_sums;
-    left_sums.reserve(1 << left_arr.size());
-    right_sums.reserve(1 << right_arr.size());
-
-    get_subset_sums(left_arr, left_sums);
-    get_subset_sums(right_arr, right_sums);
-
-    sort(right_sums.begin(), right_sums.end());
-
-    long long ways = 0;
-    for (long long sum : left_sums) {
-        long long target = x - sum;
-        auto bounds = equal_range(right_sums.begin(), right_sums.end(), target);
-        ways += distance(bounds.first, bounds.second);
+    for (int r = 0; r < n; r++) {
+        current_sum += a[r];
+        while (current_sum > t) {
+            current_sum -= a[l];
+            l++;
+        }
+        max_books = max(max_books, r - l + 1);
     }
 
-    cout << ways << "\n";
+    cout << max_books << "\n";
 
     return 0;
 }

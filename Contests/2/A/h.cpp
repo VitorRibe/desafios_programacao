@@ -1,74 +1,51 @@
 /*
-Problema: A - Meet in the Middle (CSES - 1628)
+H - Comprimento das Varetas
 
-Você recebe um array de n números. De quantas maneiras você pode escolher um subconjunto dos números com soma x?
+Existem n varetas com determinados comprimentos. Sua tarefa é modificar as varetas para que todas tenham o mesmo comprimento.
+Você pode aumentar ou diminuir o comprimento de cada vareta. Ambas as operações custam x, onde x é a diferença entre o novo comprimento e o comprimento original.
+Qual é o custo total mínimo?
 
-Entrada
-A primeira linha de entrada tem dois números n e x: o tamanho do array e a soma necessária.
-A segunda linha tem n inteiros t_1, t_2, ..., t_n: os números no array.
+Entrada:
+A primeira linha de entrada contém um inteiro n: o número de varetas.
+Em seguida, há n inteiros p_1, p_2, ..., p_n: os comprimentos das varetas.
 
-Saída
-Imprima o número de maneiras que você pode criar a soma x.
+Saída:
+Imprima um inteiro: o custo total mínimo.
 
-Restrições
-- 1 <= n <= 40
-- 1 <= x <= 10^9
-- 1 <= t_i <= 10^9
+Restrições:
+1 <= n <= 2 * 10^5
+1 <= p_i <= 10^9
 */
 
 #include <iostream>
 #include <vector>
 #include <algorithm>
+#include <cmath>
 
 using namespace std;
-
-void get_subset_sums(const vector<long long>& arr, vector<long long>& res) {
-    int n = arr.size();
-    for (int i = 0; i < (1 << n); ++i) {
-        long long sum = 0;
-        for (int j = 0; j < n; ++j) {
-            if (i & (1 << j)) {
-                sum += arr[j];
-            }
-        }
-        res.push_back(sum);
-    }
-}
 
 int main() {
     ios_base::sync_with_stdio(false);
     cin.tie(NULL);
 
     int n;
-    long long x;
-    if (!(cin >> n >> x)) return 0;
+    if (!(cin >> n)) return 0;
 
-    vector<long long> t(n);
-    for (int i = 0; i < n; ++i) {
-        cin >> t[i];
+    vector<long long> p(n);
+    for (int i = 0; i < n; i++) {
+        cin >> p[i];
     }
 
-    int mid = n / 2;
-    vector<long long> left_arr(t.begin(), t.begin() + mid);
-    vector<long long> right_arr(t.begin() + mid, t.end());
+    sort(p.begin(), p.end());
 
-    vector<long long> left_sums, right_sums;
-    left_sums.reserve(1 << left_arr.size());
-    right_sums.reserve(1 << right_arr.size());
+    long long median = p[n / 2];
+    long long total_cost = 0;
 
-    get_subset_sums(left_arr, left_sums);
-    get_subset_sums(right_arr, right_sums);
-
-    sort(right_sums.begin(), right_sums.end());
-
-    long long ways = 0;
-    for (long long sum : left_sums) {
-        long long target = x - sum;
-        auto bounds = equal_range(right_sums.begin(), right_sums.end(), target);
-        ways += distance(bounds.first, bounds.second);
+    for (int i = 0; i < n; i++) {
+        total_cost += abs(p[i] - median);
     }
 
-    cout << ways << "\n";
+    cout << total_cost << "\n";
 
     return 0;
 }
