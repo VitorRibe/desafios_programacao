@@ -45,10 +45,8 @@ struct FenwickTree {
         return sum;
     }
     
-    // Binary Lifting na BIT: encontra o k-ésimo elemento em O(log N)
     int find_kth(int k) {
         int pos = 0;
-        // 1 << 18 = 262144, que é suficiente pois Q <= 200000
         for (int i = 18; i >= 0; i--) {
             if (pos + (1 << i) <= n && tree[pos + (1 << i)] < k) {
                 pos += (1 << i);
@@ -76,13 +74,11 @@ int main() {
 
     for (int i = 0; i < q; i++) {
         cin >> queries[i].type >> queries[i].x;
-        // Para I, D e C os valores participam do domínio de coordenadas
         if (queries[i].type != 'K') {
             vals.push_back(queries[i].x);
         }
     }
 
-    // Compressão de Coordenadas
     sort(vals.begin(), vals.end());
     vals.erase(unique(vals.begin(), vals.end()), vals.end());
 
@@ -124,9 +120,6 @@ int main() {
             }
         } 
         else if (type == 'C') {
-            // Como 'x' foi incluído na compressão, get_id(x) encontra sua posição exata.
-            // O id retornado representa quantos elementos comprimidos existem <= x.
-            // Para obter os "estritamente menores", subtraímos 1 do id e consultamos na BIT.
             int id = get_id(x);
             cout << bit.query(id - 1) << "\n";
         }
